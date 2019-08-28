@@ -27,7 +27,7 @@ ng update @angular/core --allow-dirty
 
 // comment out import 'core-js/es7/reflect'; in polyfills.ts
 
-// update src/tsconfig.json to target es2015
+// update tsconfig.json to target es2015
 
 // update error.intercepter.ts to use new 2.2 error responses.
 
