@@ -1,0 +1,90 @@
+Angular update from v6 to v8
+
+npm install -g @angular/cli
+
+// run ng update
+
+// Update all non angular packages to the latest versions
+
+npm install @auth0/angular-jwt@latest alertifyjs@latest bootstrap@latest bootswatch@latest core-js@latest ngx-bootstrap@latest ngx-gallery@latest rxjs@latest
+
+// Update all non angular dev dependencies to
+
+npm install typescript@latest @types/jasmine@latest @types/jasminewd2@latest @types/node codelyzer@latest jasmine-core@latest jasmine-spec-reporter@latest karma@latest karma-chrome-launcher@latest karma-coverage-istanbul-reporter@latest karma-jasmine karma-jasmine-html-reporter@latest protractor@latest ts-node@latest tslint@latest --save-dev
+
+// Remove "@angular/http," 从DatingApp-SPA项目的package.json文件, 因它已被 removed from v7 and above
+
+// run "ng update" again!
+
+// should now see 2 in the list - cli and core.
+
+// Update this one at a time starting with the cli.
+
+ng update @angular/cli
+ng update @angular/core --allow-dirty
+
+// check that any usage of ViewChild has been updated. 这个与俺无关, 俺的Angular app才刚开始还没走到那一步呢
+
+// comment out import 'core-js/es7/reflect'; in polyfills.ts
+
+// update src/tsconfig.json to target es2015
+
+// update error.intercepter.ts to use new 2.2 error responses.
+
+npm install
+
+//若看到有类似这样的输出"npm WARN @ngtools/webpack@6.0.8 requires a peer of typescript@~2.4.0 || ~2.5.0 || ~2.6.0 || ~2.7.0 but none is installed. You must install peer dependencies yourself."
+//则运行如下: npm install @angular-devkit/build-angular@latest
+
+运行 ng serve 来启动我们的angular client app, 看是否一切正常. 总之, 俺的是正常的, so far so good.
+
+还有个Angular 自己的ngx-gallery bug: "Class constructor HammerGestureConfig cannot be invoked without 'new'" 要修复
+https://github.com/lukasz-galka/ngx-gallery/issues/242
+按如下方式 {
+Modify the providers in your app.module.ts with
+
+export class CustomHammerConfig extends HammerGestureConfig  {
+   overrides = {
+       pinch: { enable: false },
+       rotate: { enable: false }
+   };
+}
+
+and add to the Providers
+
+providers: [
+{ provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
+]
+}
+改完后的(俺是才刚完成Section 3: Security, 拿Section 4还没开始呢)app.module.ts如下:
+import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { ValueComponent } from './value/value.component';
+
+export class CustomHammerConfig extends HammerGestureConfig  {
+   overrides = {
+       pinch: { enable: false },
+       rotate: { enable: false }
+   };
+}
+
+@NgModule({
+   declarations: [
+      AppComponent,
+      ValueComponent
+   ],
+   imports: [
+      BrowserModule,
+      HttpClientModule
+   ],
+   providers: [
+      { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
+   ],
+   bootstrap: [
+      AppComponent
+   ]
+})
+export class AppModule { }
