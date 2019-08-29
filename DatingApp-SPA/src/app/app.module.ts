@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ValueComponent } from './value/value.component';
 import { NavComponent } from './nav/nav.component';
+import { AuthService } from './_services/auth.service';
 
 export class CustomHammerConfig extends HammerGestureConfig  {
    overrides = {
@@ -26,6 +27,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       FormsModule
    ],
    providers: [
+      AuthService,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
    ],
    bootstrap: [
