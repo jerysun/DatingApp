@@ -8,6 +8,7 @@ import { NavComponent } from './nav/nav.component';
 import { AuthService } from './_services/auth.service';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
+import { ErrorInterceptorProvider } from './_services/error.interceptor';
 
 export class CustomHammerConfig extends HammerGestureConfig  {
    overrides = {
@@ -30,6 +31,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
    ],
    providers: [
       AuthService,
+      ErrorInterceptorProvider,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
    ],
    bootstrap: [
