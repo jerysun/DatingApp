@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.API.Data;
@@ -35,6 +37,24 @@ namespace DatingApp.API.Controllers
             var user = await this.repo.GetUser(id);
             var userToReturn = this.mapper.Map<UserForDetailedDto>(user);
             return Ok(userToReturn);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto)
+        {
+            //check if the passed id = the one from the decodedToken, and if the guy putting
+            //the update is the current user(associated with the executing action). PUT and POST
+            //are extremely important for the security of our running app.
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            var userFromRepo = await this.repo.GetUser(id);
+            this.mapper.Map(userForUpdateDto, userFromRepo);//PUT operation is different from GET operation above
+            
+            if (await this.repo.SaveAll())
+                return NoContent();
+
+            throw new Exception($"Updating user {id} failed on save.");
         }
     }
 }

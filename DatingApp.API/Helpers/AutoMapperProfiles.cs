@@ -20,6 +20,7 @@ namespace DatingApp.API.Helpers
                 .ForMember(dest => dest.Age, opt =>
                     opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
             CreateMap<Photo, PhotosForDetailedDto>();
+            CreateMap<UserForUpdateDto, User>();//Post the updated from the form in Angular client to our DB
         }
     }
 }
