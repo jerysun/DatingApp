@@ -55,7 +55,7 @@ namespace DatingApp.API.Controllers
         [HttpPost]
         // The param userId comes from the route parameters
         public async Task<IActionResult> AddPhotoForUser(int userId,
-            PhotoForCreationDto photoForCreationDto)
+            [FromForm]PhotoForCreationDto photoForCreationDto)
         {
             //check if the passed userId = the one from the decodedToken, and if the guy posting
             //the upload is the current user(associated with the executing action). PUT and POST
