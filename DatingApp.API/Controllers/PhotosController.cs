@@ -40,6 +40,18 @@ namespace DatingApp.API.Controllers
             this.cloudinary = new Cloudinary(acc);
         }
 
+        // Also used for the CreatedAtRoute() called in the HttpPost 
+        // mehtod AddPhotoForUser() below
+        [HttpGet("{id}", Name = "GetPhoto")]
+        public async Task<IActionResult> GetPhoto(int id)// the id of Photo
+        {
+            var photoFromRepo = await this.repo.GetPhoto(id);
+
+            var photo = this.mapper.Map<PhotoForReturnDto>(photoFromRepo);
+
+            return Ok(photo);
+        }
+
         [HttpPost]
         // The param userId comes from the route parameters
         public async Task<IActionResult> AddPhotoForUser(int userId,
@@ -80,8 +92,13 @@ namespace DatingApp.API.Controllers
 
                 userFromRepo.Photos.Add(photo);
                 
-                if (await this.repo.SaveAll()) {
-                    return Ok();
+                if (await this.repo.SaveAll()) { // This process creates a SQL ID for table Photos
+                    var photoToReturn = this.mapper.Map<PhotoForReturnDto>(photo);
+
+                    // Provide the location of the resource we just created; So, we need first go above
+                    // to create a HttpGet method for the 1st param of CreatedAtRoute: routename. It is
+                    // [HttpGet("{id}", Name = "GetPhoto")]
+                    return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
                 }
             }
 

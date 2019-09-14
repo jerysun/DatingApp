@@ -22,6 +22,12 @@ namespace DatingApp.API.Data
             Context.Remove(entity);
         }
 
+        public async Task<Photo> GetPhoto(int id) // id of Photo
+        {
+            var photo = await Context.Photos.FirstOrDefaultAsync( p => p.Id == id);
+            return photo;
+        }
+
         public async Task<User> GetUser(int id)
         {
             // Include is just 'join' in SQL. Every time we return a user, 
