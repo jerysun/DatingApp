@@ -36,5 +36,21 @@ baseUrl = environment.apiUrl;
       autoUpload: false, /* we want the user to press the button! */
       maxFileSize: 10 * 1024 * 1024 /* you can set any other value */
     });
+
+    this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+
+    this.uploader.onSuccessItem = (item, response, status, headers) => {
+      if (response) {
+        const res: Photo = JSON.parse(response);
+        const photo = {
+          id: res.id,
+          url: res.url,
+          dateAdded: res.dateAdded,
+          description: res.description,
+          isMain: res.isMain
+        };
+        this.photos.push(photo);
+      }
+    };
   }
 }

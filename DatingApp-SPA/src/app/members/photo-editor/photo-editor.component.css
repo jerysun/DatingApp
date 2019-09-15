@@ -3,3 +3,11 @@ img.img-thumbnail {
     min-width: 100px !important;
     margin-bottom: 2px;
 }
+
+.nv-file-over {
+    border: dotted red;
+}
+
+input[type=file] {
+    color: transparent; /* hide the lable text of the buttons */
+}
