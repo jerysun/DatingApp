@@ -1,8 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { Photo } from 'src/app/_models/photo';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/_services/auth.service';
+import { UserService } from 'src/app/_services/user.service';
+import { AlertifyService } from 'src/app/_services/alertify.service';
 
 @Component({
   selector: 'app-photo-editor',
@@ -12,11 +14,14 @@ import { AuthService } from 'src/app/_services/auth.service';
 
 export class PhotoEditorComponent implements OnInit {
 @Input() photos: Photo[];
+@Output() getMemberPhotoChange = new EventEmitter<string>(); // the string is photo.url
 uploader: FileUploader;
 hasBaseDropZoneOver = false;
 baseUrl = environment.apiUrl;
+currentMain: Photo;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private userService: UserService,
+    private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.initializeUploader();
@@ -52,5 +57,21 @@ baseUrl = environment.apiUrl;
         this.photos.push(photo);
       }
     };
+  }
+
+  setMainPhoto(photo: Photo) {
+    // The reason why this setMainPhoto returns an Observable<Object> is
+    // the called http.post method returns an Observable<Object> which is
+    // corresponding the async Task<IActionResult> in back-end. For each
+    // returned Observable<Object> we need process it using subscribe method
+    this.userService.setMainPhoto(this.authService.decodedToken.nameid, photo.id)
+      .subscribe(() => {
+        this.currentMain = this.photos.filter(p => p.isMain === true)[0];
+        this.currentMain.isMain = false;
+        photo.isMain = true;
+        this.getMemberPhotoChange.emit(photo.url);
+      }, error => {
+        this.alertify.error(error);
+    });
   }
 }
