@@ -12,11 +12,13 @@ export class NavComponent implements OnInit {
   // {} means an empty object, it will store the User Credentials which are
   // eventually sent to the server
   model: any = {};
+  photoUrl: string;
 
   constructor(public authService: AuthService, private alertify: AlertifyService,
     private router: Router) { }
 
   ngOnInit() {
+    this.authService.currentPhotoUrl.subscribe(photoUrl => this.photoUrl = photoUrl);
   }
 
   login() {
