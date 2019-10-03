@@ -41,14 +41,16 @@ namespace DatingApp.API.Controllers
             if (await repository.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username already exists");
 
-            var userToCreate = new User
-            {
-                Username = userForRegisterDto.Username,
-            };
-
+            var userToCreate = this.mapper.Map<User>(userForRegisterDto);
             var createdUser = await repository.Register(userToCreate, userForRegisterDto.Password);
+            
+            // we don't return createdUser because we don't want the password to be revealed
+            var userToReturn = this.mapper.Map<UserForDetailedDto>(createdUser);
 
-            return StatusCode(201);
+            // similar to php, route is redirected to xx/api/users/id, the GetUser method
+            // in UsersController will be called, so the return value actually are 
+            // "201 Created with the Location Header", and entity(Dto).
+            return CreatedAtRoute("GetUser", new {controller = "Users", id = createdUser.Id }, userToReturn);
         }
 
         [HttpPost("login")]

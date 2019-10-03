@@ -55,6 +55,11 @@ currentMain: Photo;
           isMain: res.isMain
         };
         this.photos.push(photo);
+        if (photo.isMain) {
+          this.authService.changeMemberPhoto(photo.url);
+          this.authService.currentUser.photoUrl = photo.url;
+          localStorage.setItem('user', JSON.stringify(this.authService.currentUser));
+        }
       }
     };
   }
@@ -62,7 +67,7 @@ currentMain: Photo;
   setMainPhoto(photo: Photo) {
     // The reason why this setMainPhoto returns an Observable<Object> is
     // the called http.post method returns an Observable<Object> which is
-    // corresponding the async Task<IActionResult> in back-end. For each
+    // corresponding to the async Task<IActionResult> in back-end. For each
     // returned Observable<Object> we need process it using subscribe method
     this.userService.setMainPhoto(this.authService.decodedToken.nameid, photo.id)
       .subscribe(() => {
