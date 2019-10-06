@@ -26,10 +26,16 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        //public async Task<IActionResult> GetUsers([FromQuery(Name = "pageNumber")] int pageNumber, [FromQuery(Name = "pageSize")] int pageSize) // ASP.NET way
+        public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams) // ASP.NET Core way
         {
-            var users = await this.repo.GetUsers();
-            var usersToReturn = this.mapper.Map<IEnumerable<UserForListDto>>(users);
+            var users = await this.repo.GetUsers(userParams);
+            var usersToReturn = this.mapper.Map<IEnumerable<UserForListDto>>(users);// <dst>(src), Dto is always dst
+
+            // Add pagination to the HttpResponse Headers. Because we're in Controller
+            // so we have access to Response, furhtermore we added an extension method
+            // to HttpResponse - AddPagination() in DatingApp.API\Helpers\Extensions.cs
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
             return Ok(usersToReturn);
         }
 
