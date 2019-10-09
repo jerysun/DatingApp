@@ -29,6 +29,15 @@ namespace DatingApp.API.Controllers
         //public async Task<IActionResult> GetUsers([FromQuery(Name = "pageNumber")] int pageNumber, [FromQuery(Name = "pageSize")] int pageSize) // ASP.NET way
         public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams) // ASP.NET Core way
         {
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var userFromRepo = await this.repo.GetUser(currentUserId);
+            userParams.UserId = currentUserId;
+
+            if (string.IsNullOrEmpty(userParams.Gender)) // kinda default
+            {
+                userParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
+            }
+
             var users = await this.repo.GetUsers(userParams);
             var usersToReturn = this.mapper.Map<IEnumerable<UserForListDto>>(users);// <dst>(src), Dto is always dst
 
