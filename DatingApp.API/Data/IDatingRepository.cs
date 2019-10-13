@@ -15,5 +15,11 @@ namespace DatingApp.API.Data
 
          Task<Photo> GetPhoto(int id); // id of Photo
          Task<Photo> GetMainPhotoForUser(int userId);
+
+         //userId likes recipientId, the latter is passive, the 2 Ids are of UserId
+         //scenario: In the likes list of an user of userId, he can click another
+         //          member with the recipientID who is liked by him, then he will 
+         //          be redirected to that member's homepage.
+         Task<Like> GetLike(int userId, int recipientId);
     }
 }
