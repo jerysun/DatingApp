@@ -13,6 +13,7 @@ namespace DatingApp.API.Data
 
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -37,6 +38,16 @@ namespace DatingApp.API.Data
                 .WithMany(u => u.Likees)
                 .HasForeignKey(u => u.LikerId)     // generate FK2(Foreign Key)
                 .OnDelete(DeleteBehavior.Restrict);// Rule on FK2, yes this table has 2 FKs!
+            
+            builder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(m => m.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.Entity<Message>()
+                .HasOne(m => m.Recipient)
+                .WithMany(m => m.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
