@@ -21,5 +21,8 @@ namespace DatingApp.API.Data
          //          member with the recipientID who is liked by him, then he will 
          //          be redirected to that member's homepage.
          Task<Like> GetLike(int userId, int recipientId);
+         Task<Message> GetMessage(int id);//id is message id
+         Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);
+         Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId);
     }
 }

@@ -11,7 +11,7 @@ namespace DatingApp.API.Helpers
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            // The return value of next() gives the access to 
+            // The return value of next() gives access to 
             // HttpContext for the action to be executed
             var resultContext = await next();
             // Get userId from jwt
