@@ -149,7 +149,15 @@ namespace DatingApp.API.Data
 
         public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
         {
-            return null;
+            var messages = Context.Messages
+                .Include(m => m.Sender).ThenInclude(u => u.Photos)
+                .Include(m => m.Recipient).ThenInclude(u => u.Photos)
+                .AsQueryable();
+            
+            //conversation between two guys
+            messages = messages.Where(m => m.RecipientId == userId && m.SenderId == recipientId /*interlaced*/
+                || m.RecipientId == recipientId && m.SenderId == userId/*separate*/);
+            return await messages.OrderByDescending(m => m.MessageSent).ToListAsync();
         }
     }
 }
