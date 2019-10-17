@@ -135,7 +135,7 @@ namespace DatingApp.API.Data
                 case "Outbox":
                     messages = messages.Where(m => m.SenderId == messageParams.UserId);
                     break;
-                default: // "UnRead" message
+                default: // "Unread" message
                     messages = messages.Where(m => m.RecipientId == messageParams.UserId && !m.IsRead);
                     break;
             }
