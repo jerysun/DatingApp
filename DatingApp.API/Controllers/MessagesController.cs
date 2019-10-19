@@ -63,7 +63,7 @@ namespace DatingApp.API.Controllers
         }
 
         //You must add something like "thread/" in the route, else .Net Core cannot
-        //distinguish this [HttpGet("{recipientId}")] and [HttpGet("{id}")] above
+        //distinguish between this [HttpGet("{recipientId}")] and [HttpGet("{id}")] above
         [HttpGet("thread/{recipientId}")]
         public async Task<IActionResult> GetMessageThread(int userId, int recipientId)
         {

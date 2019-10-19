@@ -1,0 +1,17 @@
+/* The same effect as the table tab below
+div.btn-group {
+    bottom: 15px;
+}
+*/
+
+table {
+    margin-top: 15px;
+}
+
+.img-circle {
+    max-height: 50px; /* the width is automatically proportionally calculated */
+}
+
+td {
+    vertical-align: middle;
+}
