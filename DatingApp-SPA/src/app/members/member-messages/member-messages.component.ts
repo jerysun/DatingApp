@@ -34,6 +34,7 @@ export class MemberMessagesComponent implements OnInit {
     this.newMessage.recipientId = this.recipientId;
     this.userService.sendMessage(this.authService.decodedToken.nameid, this.newMessage)
       .subscribe((message: Message) => {
+        // debugger; // Set a BR(break point) used by Chrome Development tools
         this.messages.unshift(message);
         this.newMessage.content = '';
       }, error => {

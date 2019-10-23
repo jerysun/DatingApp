@@ -130,13 +130,16 @@ namespace DatingApp.API.Data
             switch (messageParams.MessageContainer)
             {
                 case "Inbox":
-                    messages = messages.Where(m => m.RecipientId == messageParams.UserId);
+                    messages = messages.Where(m => m.RecipientId == messageParams.UserId
+                        && !m.RecipientDeleted);
                     break;
                 case "Outbox":
-                    messages = messages.Where(m => m.SenderId == messageParams.UserId);
+                    messages = messages.Where(m => m.SenderId == messageParams.UserId
+                        && !m.SenderDeleted);
                     break;
                 default: // "Unread" message
-                    messages = messages.Where(m => m.RecipientId == messageParams.UserId && !m.IsRead);
+                    messages = messages.Where(m => m.RecipientId == messageParams.UserId 
+                        && !m.RecipientDeleted && !m.IsRead);
                     break;
             }
 
@@ -155,8 +158,10 @@ namespace DatingApp.API.Data
                 .AsQueryable();
             
             //conversation between two guys
-            messages = messages.Where(m => m.RecipientId == userId && m.SenderId == recipientId /*interlaced*/
-                || m.RecipientId == recipientId && m.SenderId == userId/*separate*/);
+            messages = messages.Where(m => m.RecipientId == userId && !m.RecipientDeleted
+                && m.SenderId == recipientId /*interlaced*/
+                || m.RecipientId == recipientId
+                && m.SenderId == userId && !m.SenderDeleted /*separate*/);
             return await messages.OrderByDescending(m => m.MessageSent).ToListAsync();
         }
     }
