@@ -86,7 +86,7 @@ export class UserService {
     }
     // console.log('params: ', params);
 
-    // get<T>(), <T> is redundant if T is not an array type, get() is enought
+    // get<T>(), <T> is redundant if T is not an array type, get() is enough
     return this.http.get<Message[]>(this.baseUrl + 'users/' + id + '/messages', { observe: 'response', params})
       .pipe(
         map(response => {
@@ -105,6 +105,15 @@ export class UserService {
 
   sendMessage(id: number, message: Message) {
     return this.http.post(this.baseUrl + 'users/' + id + '/messages', message);
+  }
+
+  deleteMessage(id: number, userId: number) {
+    return this.http.post(this.baseUrl + 'users/' + userId + '/messages/' + id, {});
+  }
+
+  markAsRead(userId: number, id: number) {
+    return this.http.post(this.baseUrl + 'users/' + userId + '/messages/' + id + '/read', {})
+      .subscribe();
   }
 }
 
