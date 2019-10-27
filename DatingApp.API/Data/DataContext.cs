@@ -1,22 +1,41 @@
 using Microsoft.EntityFrameworkCore;
 using DatingApp.API.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>,
+        UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
 
         public DbSet<Value> Values { get; set; }
-        public DbSet<User> Users { get; set; }
-
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+            builder.Entity<UserRole>(userRole => 
+            {
+                // Generate a new key for UserRole by combining UserId and RoleId
+                // refer to UserRole.cs which has only the 2 related properties
+                userRole.HasKey(ur => new {ur.UserId, ur.RoleId});
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
+
             // k means combination(actually k is an instance of class Like)
             // which helps HasKey() form the primary key, so table Likes
             // will have a primary key although we don't create this pro-
