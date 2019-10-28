@@ -81,6 +81,14 @@ namespace DatingApp.API
                     };
                 });
 
+            //use these policies to protect our endpoints, they empower different users different rights/privileges
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
+                options.AddPolicy("VipOnly", policy => policy.RequireRole("VIP"));
+            });
+
             //services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc(options =>
                 {
@@ -98,7 +106,6 @@ namespace DatingApp.API
             services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
-            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
             
             services.AddScoped<LogUserActivity>();

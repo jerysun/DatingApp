@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DatingApp.API.Controllers
 {
     [ServiceFilter(typeof(LogUserActivity))]
+    [Authorize]
     [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class MessagesController : ControllerBase
@@ -126,26 +127,6 @@ namespace DatingApp.API.Controllers
                 return NoContent();
             
             throw new Exception("Error deleting the message");
-        }
-
-        [HttpPost("{id}/read")]
-        public async Task<IActionResult> MarkMessageAsRead(int userId, int id)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();
-            
-            var messageFromRepo = await _repo.GetMessage(id);
-
-            if (messageFromRepo.RecipientId != userId)
-                return Unauthorized();
-
-            messageFromRepo.IsRead = true;
-            messageFromRepo.DateRead = DateTime.Now;
-
-            if (await _repo.SaveAll())
-                return NoContent();
-            
-            throw new Exception("Error marking the message as read");
         }
     }
 }
