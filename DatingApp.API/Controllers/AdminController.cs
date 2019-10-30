@@ -67,7 +67,6 @@ namespace DatingApp.API.Controllers
             if (!result.Succeeded)
                 return BadRequest("Failed to add to roles");
             */
-
             var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
 
             if (!result.Succeeded)

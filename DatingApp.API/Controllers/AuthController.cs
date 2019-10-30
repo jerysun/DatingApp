@@ -73,7 +73,7 @@ namespace DatingApp.API.Controllers
             var appUser = mapper.Map<UserForListDto>(user);
 
             return Ok(new
-            {
+            {   //return value Task has lots of metadata we have no interest in, we only need Task.Result
                 token = GenerateJwtToken(user).Result,
                 user = appUser
             });
