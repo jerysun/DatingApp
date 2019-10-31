@@ -27,15 +27,20 @@ namespace DatingApp.API.Data
 
         public async Task<Photo> GetPhoto(int id) // id of Photo
         {
-            var photo = await Context.Photos.FirstOrDefaultAsync( p => p.Id == id);
+            var photo = await Context.Photos.IgnoreQueryFilters()
+                .FirstOrDefaultAsync( p => p.Id == id);
             return photo;
         }
 
-        public async Task<User> GetUser(int id)
+        public async Task<User> GetUser(int id, bool isCurrentUser)
         {
             // Include is just 'join' in SQL. Every time we return a user, 
             // it must include the associated photos
-            var user = await Context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.Id == id);
+            var query = Context.Users.Include(p => p.Photos).AsQueryable();
+            if (isCurrentUser)
+                query = query.IgnoreQueryFilters();
+
+            var user = await query.FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
 

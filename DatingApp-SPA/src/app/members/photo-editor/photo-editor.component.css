@@ -5,9 +5,22 @@ img.img-thumbnail {
 }
 
 .nv-file-over {
-    border: dotted red;
+    border: dotted 3px red;
 }
 
 input[type=file] {
     color: transparent; /* hide the lable text of the buttons */
+}
+
+.not-approved {
+    opacity: 0.2;
+}
+
+.img-wrapper {
+    position: relative;
+}
+
+.img-text {
+    position: absolute;
+    bottom: 30%;
 }

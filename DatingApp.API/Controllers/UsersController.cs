@@ -30,7 +30,7 @@ namespace DatingApp.API.Controllers
         public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams) // ASP.NET Core way
         {
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var userFromRepo = await this.repo.GetUser(currentUserId);
+            var userFromRepo = await this.repo.GetUser(currentUserId, true);
             userParams.UserId = currentUserId;
 
             if (string.IsNullOrEmpty(userParams.Gender)) // kinda default
@@ -51,7 +51,9 @@ namespace DatingApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")] // query string parameter
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await this.repo.GetUser(id);
+            bool isCurrentUser = id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var user = await this.repo.GetUser(id, isCurrentUser);
             var userToReturn = this.mapper.Map<UserForDetailedDto>(user);
             return Ok(userToReturn);
         }
@@ -65,7 +67,7 @@ namespace DatingApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var userFromRepo = await this.repo.GetUser(id);
+            var userFromRepo = await this.repo.GetUser(id, true);
             this.mapper.Map(userForUpdateDto, userFromRepo);//PUT operation is different from GET operation above
             
             if (await this.repo.SaveAll())
@@ -84,11 +86,8 @@ namespace DatingApp.API.Controllers
             if (like != null)
                 return BadRequest("You already like this user.");
             
-            if (await this.repo.GetUser(recipientId) == null)
+            if (await this.repo.GetUser(recipientId, false) == null)
                 return NotFound();
-
-            var user = await this.repo.GetUser(id);
-            var recipient = await this.repo.GetUser(recipientId);
 
             like = new Like {
                 LikerId = id,

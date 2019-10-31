@@ -62,7 +62,7 @@ namespace DatingApp.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var userFromRepo = await this.repo.GetUser(userId);
+            var userFromRepo = await this.repo.GetUser(userId, true);
 
             var file = photoForCreationDto.File;
             var uploadResult = new ImageUploadResult();//store the returned value from Cloudinary
@@ -110,7 +110,7 @@ namespace DatingApp.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
             
-            var user = await this.repo.GetUser(userId);
+            var user = await this.repo.GetUser(userId, true);
 
             if (!user.Photos.Any(p => p.Id == id))
                 return Unauthorized();
@@ -136,7 +136,7 @@ namespace DatingApp.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
             
-            var user = await this.repo.GetUser(userId);
+            var user = await this.repo.GetUser(userId, true);
 
             if (!user.Photos.Any(p => p.Id == id))
                 return Unauthorized();

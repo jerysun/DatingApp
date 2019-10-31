@@ -23,7 +23,7 @@ namespace DatingApp.API.Helpers
             // GetService is not recognized by Intellisense, so we need manually add
             // using Microsoft.Extensions.DependencyInjection;
             var repo = resultContext.HttpContext.RequestServices.GetService<IDatingRepository>();
-            var user = await repo.GetUser(userId);
+            var user = await repo.GetUser(userId, true);
             user.LastActive = DateTime.Now;
             await repo.SaveAll();
         }
