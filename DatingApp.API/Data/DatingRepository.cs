@@ -34,9 +34,7 @@ namespace DatingApp.API.Data
 
         public async Task<User> GetUser(int id, bool isCurrentUser)
         {
-            // Include is just 'join' in SQL. Every time we return a user, 
-            // it must include the associated photos
-            var query = Context.Users.Include(p => p.Photos).AsQueryable();
+            var query = Context.Users.AsQueryable();
             if (isCurrentUser)
                 query = query.IgnoreQueryFilters();
 
@@ -46,7 +44,7 @@ namespace DatingApp.API.Data
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var source = Context.Users.Include(p => p.Photos).OrderByDescending(u => u.LastActive).AsQueryable();
+            var source = Context.Users.OrderByDescending(u => u.LastActive).AsQueryable();
 
             source = source.Where(u => u.Id != userParams.UserId && u.Gender == userParams.Gender);
 
@@ -101,9 +99,9 @@ namespace DatingApp.API.Data
         private async Task<IEnumerable<int>> GetUserLikes(int id, bool likers)
         {
             var user = await this.Context.Users
-                .Include(x => x.Likers) // populate the collection of Likers in User class
-                .Include(x => x.Likees) // populate the collection of Likees in User class
-                .FirstOrDefaultAsync(u => u.Id == id);
+                //.Include(x => x.Likers) // populate the collection of Likers in User class
+                //.Include(x => x.Likees) // populate the collection of Likees in User class
+                .FirstOrDefaultAsync(u => u.Id == id);//Comment 2 Include due to using LazyLoading
             
             if (likers)
             {   // returns a list of integers - i.e, IDs
@@ -128,9 +126,9 @@ namespace DatingApp.API.Data
         public async Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams)
         {
             var messages = Context.Messages
-                .Include(m => m.Sender).ThenInclude(u => u.Photos) //"embedded" relationship
-                .Include(m => m.Recipient).ThenInclude(u => u.Photos)
-                .AsQueryable();
+                //.Include(m => m.Sender).ThenInclude(u => u.Photos) //"embedded" relationship
+                //.Include(m => m.Recipient).ThenInclude(u => u.Photos)
+                .AsQueryable();//Comment 2 Include due to using LazyLoading
             
             switch (messageParams.MessageContainer)
             {
@@ -157,10 +155,7 @@ namespace DatingApp.API.Data
 
         public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
         {
-            var messages = Context.Messages
-                .Include(m => m.Sender).ThenInclude(u => u.Photos)
-                .Include(m => m.Recipient).ThenInclude(u => u.Photos)
-                .AsQueryable();
+            var messages = Context.Messages.AsQueryable();
             
             //conversation between two guys
             messages = messages.Where(m => m.RecipientId == userId && !m.RecipientDeleted
