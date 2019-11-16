@@ -5,7 +5,7 @@ This ongoing dates web app is developed using ASP.Net Core(C#) and Angular(TypeS
 ## Some features:
 - Using the SPA architecture.
 - Employing Angular JWT library to process token handling.
-- Adopting Entity Framework Core 2.x.
+- Adopting Entity Framework Core 3.x.
 - Utilizing Cloudinary as the photo storage solution.
 - Reactive Forms in Angular.
 - Paging, Sorting, Filtering in ASP.NET Core.

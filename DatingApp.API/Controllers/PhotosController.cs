@@ -97,7 +97,7 @@ namespace DatingApp.API.Controllers
                     // Provide the location of the resource we just created; So, we need first go above
                     // to create a HttpGet method for the 1st param of CreatedAtRoute: routename. It is
                     // [HttpGet("{id}", Name = "GetPhoto")]
-                    return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
+                    return CreatedAtRoute("GetPhoto", new { userId, id = photo.Id }, photoToReturn);
                 }
             }
 
